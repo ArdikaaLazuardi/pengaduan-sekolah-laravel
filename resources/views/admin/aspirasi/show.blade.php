@@ -1,0 +1,72 @@
+@extends('layouts.app', ['title' => 'Detail Aspirasi'])
+
+@section('content')
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Detail Aspirasi</h1>
+        <p class="text-muted mb-0">Histori lengkap aspirasi dan progres perbaikan.</p>
+    </div>
+    <a href="{{ route('admin.aspirasi.edit', $aspirasi) }}" class="btn btn-primary">Update Status</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card card-shadow">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Informasi Aspirasi</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Tanggal</dt>
+                    <dd class="col-sm-8">{{ $aspirasi->created_at->format('d F Y H:i') }}</dd>
+
+                    <dt class="col-sm-4">Siswa</dt>
+                    <dd class="col-sm-8">{{ $aspirasi->siswa->nama }} ({{ $aspirasi->nis }}) - {{ $aspirasi->siswa->kelas }}</dd>
+
+                    <dt class="col-sm-4">Kategori</dt>
+                    <dd class="col-sm-8">{{ $aspirasi->kategori->ket_kategori }}</dd>
+
+                    <dt class="col-sm-4">Lokasi</dt>
+                    <dd class="col-sm-8">{{ $aspirasi->lokasi }}</dd>
+
+                    <dt class="col-sm-4">Keluhan</dt>
+                    <dd class="col-sm-8">{{ $aspirasi->ket }}</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">{{ $aspirasi->status }}</dd>
+
+                    <dt class="col-sm-4">Feedback</dt>
+                    <dd class="col-sm-8">{{ $aspirasi->feedback ?: '-' }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card card-shadow mb-4">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Progress Perbaikan</h2>
+                <div class="progress mb-3" role="progressbar" aria-valuenow="{{ $aspirasi->progress_persen }}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" style="width: {{ $aspirasi->progress_persen }}%">{{ $aspirasi->progress_persen }}%</div>
+                </div>
+                <p class="mb-0 text-muted">Terakhir diperbarui oleh {{ $aspirasi->admin?->name ?? 'Admin' }}.</p>
+            </div>
+        </div>
+
+        <div class="card card-shadow">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Timeline Perbaikan</h2>
+                <div class="timeline">
+                    @forelse($aspirasi->progressUpdates as $progress)
+                        <div class="timeline-item">
+                            <div class="fw-semibold">{{ $progress->progress_persen }}%</div>
+                            <div>{{ $progress->catatan }}</div>
+                            <div class="small text-muted">{{ $progress->created_at->format('d/m/Y H:i') }} · {{ $progress->admin?->name ?? 'Admin' }}</div>
+                        </div>
+                    @empty
+                        <div class="text-muted">Belum ada riwayat progres.</div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

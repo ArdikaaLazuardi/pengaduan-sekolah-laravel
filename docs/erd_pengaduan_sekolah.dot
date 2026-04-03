@@ -1,0 +1,17 @@
+digraph ERD {
+  graph [rankdir=LR, fontsize=10, fontname="Arial", splines=ortho, nodesep=0.5, ranksep=0.9];
+  node [shape=record, fontname="Arial", fontsize=10];
+  edge [fontname="Arial", fontsize=9];
+
+  admins [label="{admins|+ id : bigint PK\l+ name : varchar\l+ username : varchar UNIQUE\l+ password : varchar\l}"];
+  siswas [label="{siswas|+ nis : varchar PK\l+ nama : varchar\l+ kelas : varchar\l}"];
+  kategoris [label="{kategoris|+ id : bigint PK\l+ ket_kategori : varchar\l}"];
+  aspirasis [label="{aspirasis|+ id : bigint PK\l+ nis : varchar FK\l+ kategori_id : bigint FK\l+ lokasi : varchar\l+ ket : text\l+ status : enum\l+ feedback : text\l+ progress_persen : tinyint\l+ admin_id : bigint FK\l}"];
+  progress_updates [label="{progress_updates|+ id : bigint PK\l+ aspirasi_id : bigint FK\l+ progress_persen : tinyint\l+ catatan : text\l+ admin_id : bigint FK\l}"];
+
+  siswas -> aspirasis [label="1..n"];
+  kategoris -> aspirasis [label="1..n"];
+  admins -> aspirasis [label="1..n"];
+  aspirasis -> progress_updates [label="1..n"];
+  admins -> progress_updates [label="1..n"];
+}

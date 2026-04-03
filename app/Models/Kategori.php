@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Kategori extends Model
+{
+    protected $table = 'kategoris';
+
+    protected $fillable = [
+        'ket_kategori',
+    ];
+
+    public function aspirasis(): HasMany
+    {
+        return $this->hasMany(Aspirasi::class, 'kategori_id');
+    }
+}

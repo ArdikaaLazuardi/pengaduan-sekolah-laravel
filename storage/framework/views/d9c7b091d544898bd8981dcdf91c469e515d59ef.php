@@ -1,6 +1,6 @@
-@extends('layouts.app', ['title' => 'Input Aspirasi'])
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
     <div>
         <div class="small text-uppercase fw-bold" style="letter-spacing:.12em; color: var(--text-soft);">Student Form</div>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="d-flex flex-wrap gap-2">
-        <a href="{{ route('siswa.aspirasi.index') }}" class="btn btn-soft">
+        <a href="<?php echo e(route('siswa.aspirasi.index')); ?>" class="btn btn-soft">
             <i class="bi bi-arrow-left me-2"></i>
             Kembali 
         </a>
@@ -52,7 +52,7 @@
             <div class="mt-4">
                 <div class="small text-white-50 mb-2">Akses cepat</div>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('siswa.aspirasi.index') }}" class="btn btn-light btn-sm px-3 rounded-pill fw-bold">
+                    <a href="<?php echo e(route('siswa.aspirasi.index')); ?>" class="btn btn-light btn-sm px-3 rounded-pill fw-bold">
                         <i class="bi bi-clock-history me-1"></i>
                         Riwayat Aspirasi
                     </a>
@@ -81,8 +81,8 @@
             </div>
 
             <div class="p-4 p-lg-5">
-                <form method="post" action="{{ route('siswa.aspirasi.store') }}">
-                    @csrf
+                <form method="post" action="<?php echo e(route('siswa.aspirasi.store')); ?>">
+                    <?php echo csrf_field(); ?>
 
                     <div class="row g-4">
                         <div class="col-12">
@@ -93,11 +93,12 @@
                                 </span>
                                 <select name="kategori_id" class="form-select" required>
                                     <option value="">Pilih kategori</option>
-                                    @foreach($kategoris as $kategori)
-                                        <option value="{{ $kategori->id }}" @selected(old('kategori_id') == $kategori->id)>
-                                            {{ $kategori->ket_kategori }}
+                                    <?php $__currentLoopData = $kategoris; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($kategori->id); ?>" <?php if(old('kategori_id') == $kategori->id): echo 'selected'; endif; ?>>
+                                            <?php echo e($kategori->ket_kategori); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                             <div class="small mt-2" style="color: var(--text-soft);">
@@ -114,7 +115,7 @@
                                 <input
                                     type="text"
                                     name="lokasi"
-                                    value="{{ old('lokasi') }}"
+                                    value="<?php echo e(old('lokasi')); ?>"
                                     class="form-control"
                                     maxlength="100"
                                     placeholder="Contoh: Ruang Kelas XI IPA 2 / Toilet Lantai 1"
@@ -137,7 +138,7 @@
                                     placeholder="Jelaskan kondisi sarana yang rusak atau masukan yang ingin disampaikan..."
                                     style="min-height: 180px; resize: vertical;"
                                     required
-                                >{{ old('ket') }}</textarea>
+                                ><?php echo e(old('ket')); ?></textarea>
 
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <div class="small" style="color: var(--text-soft);">
@@ -157,7 +158,7 @@
                         </div>
 
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="{{ route('siswa.aspirasi.index') }}" class="btn btn-soft">
+                            <a href="<?php echo e(route('siswa.aspirasi.index')); ?>" class="btn btn-soft">
                                 Batal
                             </a>
                             <button class="btn btn-primary">
@@ -171,4 +172,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', ['title' => 'Input Aspirasi'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\user\Downloads\pengaduan-sekolah-laravel\pengaduan-sekolah-laravel\resources\views/siswa/aspirasi/create.blade.php ENDPATH**/ ?>

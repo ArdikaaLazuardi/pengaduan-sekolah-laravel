@@ -1,36 +1,317 @@
+
+
 <?php $__env->startSection('content'); ?>
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+<?php
+    $items = collect($aspirasis->items());
+    $latestAspirasi = $items->first();
+    $avgProgress = $items->count() ? round($items->avg('progress_persen')) : 0;
+    $donePercent = $ringkasan['total'] > 0 ? round(($ringkasan['selesai'] / $ringkasan['total']) * 100) : 0;
+    $processPercent = $ringkasan['total'] > 0 ? round(($ringkasan['proses'] / $ringkasan['total']) * 100) : 0;
+    $waitingPercent = $ringkasan['total'] > 0 ? round(($ringkasan['menunggu'] / $ringkasan['total']) * 100) : 0;
+
+    $statusClass = function ($status) {
+        return match ($status) {
+            'Menunggu' => 'status-menunggu',
+            'Proses' => 'status-proses',
+            'Selesai' => 'status-selesai',
+            default => 'status-menunggu',
+        };
+    };
+?>
+
+<div id="top-dashboard-siswa"></div>
+
+<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
     <div>
-        <h1 class="h3 mb-1">Histori Aspirasi Saya</h1>
-        <p class="text-muted mb-0">Pantau status penyelesaian, feedback admin, dan progres perbaikan.</p>
+        <div class="small text-uppercase fw-bold" style="letter-spacing:.12em; color: var(--text-soft);">Student Dashboard</div>
+        <h1 class="mb-2" style="font-size:2rem; font-weight:800; letter-spacing:-.03em;">Histori Aspirasi Saya</h1>
+        <p class="mb-0" style="color: var(--text-soft); max-width: 760px;">
+            Pantau status penyelesaian, feedback admin, dan progres perbaikan dengan tampilan yang lebih modern,
+            clean, dan nyaman dibaca.
+        </p>
     </div>
-    <a href="<?php echo e(route('siswa.aspirasi.create')); ?>" class="btn btn-primary">+ Input Aspirasi</a>
+
+    <div class="d-flex flex-wrap gap-2">
+        <a href="<?php echo e(route('siswa.aspirasi.create')); ?>" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>
+            Input Aspirasi
+        </a>
+    </div>
 </div>
 
 <div class="row g-3 mb-4">
-    <?php $__currentLoopData = [
-        ['label' => 'Total', 'value' => $ringkasan['total'], 'class' => 'primary'],
-        ['label' => 'Menunggu', 'value' => $ringkasan['menunggu'], 'class' => 'secondary'],
-        ['label' => 'Proses', 'value' => $ringkasan['proses'], 'class' => 'warning'],
-        ['label' => 'Selesai', 'value' => $ringkasan['selesai'], 'class' => 'success'],
-    ]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <div class="col-6 col-lg-3">
-            <div class="card card-shadow h-100">
-                <div class="card-body">
-                    <div class="text-muted small"><?php echo e($item['label']); ?></div>
-                    <div class="display-6 fw-bold text-<?php echo e($item['class']); ?>"><?php echo e($item['value']); ?></div>
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card-soft p-4 h-100">
+            <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.08em; color: var(--text-soft);">Total Aspirasi</div>
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    <div style="font-size:2rem; font-weight:800; line-height:1;"><?php echo e($ringkasan['total']); ?></div>
+                    <div class="small mt-2" style="color: var(--text-soft);">Seluruh laporan yang pernah kamu kirim</div>
+                </div>
+                <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:54px; height:54px; background:#eef3f1; color:var(--primary);">
+                    <i class="bi bi-stack"></i>
                 </div>
             </div>
         </div>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card-soft p-4 h-100">
+            <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.08em; color: var(--text-soft);">Menunggu</div>
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    <div style="font-size:2rem; font-weight:800; line-height:1;"><?php echo e($ringkasan['menunggu']); ?></div>
+                    <div class="small mt-2" style="color: var(--text-soft);"><?php echo e($waitingPercent); ?>% dari total laporan</div>
+                </div>
+                <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:54px; height:54px; background:#f1efea; color:#6b7280;">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card-soft p-4 h-100">
+            <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.08em; color: var(--text-soft);">Dalam Proses</div>
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    <div style="font-size:2rem; font-weight:800; line-height:1;"><?php echo e($ringkasan['proses']); ?></div>
+                    <div class="small mt-2" style="color: var(--text-soft);"><?php echo e($processPercent); ?>% sedang ditangani</div>
+                </div>
+                <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:54px; height:54px; background:#fff5dc; color:#a16207;">
+                    <i class="bi bi-gear-wide-connected"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card-soft p-4 h-100">
+            <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.08em; color: var(--text-soft);">Selesai</div>
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    <div style="font-size:2rem; font-weight:800; line-height:1;"><?php echo e($ringkasan['selesai']); ?></div>
+                    <div class="small mt-2" style="color: var(--text-soft);"><?php echo e($donePercent); ?>% sudah diselesaikan</div>
+                </div>
+                <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:54px; height:54px; background:#dcfce7; color:#166534;">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card card-shadow">
-    <div class="card-body">
-        <h2 class="h5 mb-3">Daftar Aspirasi</h2>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
+<div class="row g-3 mb-4">
+    <div class="col-xl-4">
+        <div class="card-soft p-4 h-100" style="background: linear-gradient(145deg, #0f4f4b 0%, #0b3d3a 100%); color: #fff;">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <div class="small text-white-50 fw-semibold mb-2">Ringkasan Akun Siswa</div>
+                    <div style="font-size:2rem; font-weight:800; line-height:1.1;">
+                        <?php echo e(auth('siswa')->user()->nama); ?>
+
+                    </div>
+                    <div class="mt-2 text-white-50">
+                        <?php echo e(auth('siswa')->user()->nis); ?> • <?php echo e(auth('siswa')->user()->kelas); ?>
+
+                    </div>
+                </div>
+                <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:54px; height:54px; background: rgba(255,255,255,.12);">
+                    <i class="bi bi-person-badge fs-5"></i>
+                </div>
+            </div>
+
+            <div class="rounded-4 p-3" style="background: rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.10);">
+                <div class="small text-white-50 mb-1">Rata-rata progres laporan pada halaman ini</div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div style="font-size:1.8rem; font-weight:800;"><?php echo e($avgProgress); ?>%</div>
+                    <div class="small text-white-50">Update visual modern</div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="small text-white-50 mb-2">Aksi cepat</div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="<?php echo e(route('siswa.aspirasi.create')); ?>" class="btn btn-light btn-sm px-3 rounded-pill fw-bold">
+                        <i class="bi bi-send me-1"></i>
+                        Kirim Aspirasi
+                    </a>
+                    <a href="<?php echo e(route('siswa.aspirasi.index')); ?>#daftar-aspirasi" class="btn btn-outline-light btn-sm px-3 rounded-pill fw-bold">
+                        <i class="bi bi-clock-history me-1"></i>
+                        Lihat Riwayat
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8">
+        <div class="card-soft p-4 h-100">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+                <div>
+                    <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.08em; color: var(--text-soft);">Progress Overview</div>
+                    <h5 class="mb-1 fw-bold">Statistik penyelesaian aspirasi</h5>
+                    <div class="small" style="color: var(--text-soft);">Ringkasan visual berdasarkan status laporan kamu.</div>
+                </div>
+
+                <div class="topbar-chip">
+                    <i class="bi bi-bar-chart"></i>
+                    Dashboard Siswa
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="p-3 rounded-4 h-100" style="background:#f6f3ee; border:1px solid var(--border-soft);">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="fw-bold">Menunggu</div>
+                            <div class="small text-muted"><?php echo e($waitingPercent); ?>%</div>
+                        </div>
+                        <div class="progress" style="height:10px; border-radius:999px; background:#e8e2da;">
+                            <div class="progress-bar" style="width: <?php echo e($waitingPercent); ?>%; background:#9ca3af;"></div>
+                        </div>
+                        <div class="small mt-3" style="color: var(--text-soft);">
+                            Laporan yang masih belum diproses admin.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded-4 h-100" style="background:#fff8e8; border:1px solid #f3e4b0;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="fw-bold">Proses</div>
+                            <div class="small text-muted"><?php echo e($processPercent); ?>%</div>
+                        </div>
+                        <div class="progress" style="height:10px; border-radius:999px; background:#f6e9c8;">
+                            <div class="progress-bar" style="width: <?php echo e($processPercent); ?>%; background:#d4a017;"></div>
+                        </div>
+                        <div class="small mt-3" style="color: var(--text-soft);">
+                            Laporan yang sedang ditangani atau diperbaiki.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 rounded-4 h-100" style="background:#ecfdf3; border:1px solid #cdeed8;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="fw-bold">Selesai</div>
+                            <div class="small text-muted"><?php echo e($donePercent); ?>%</div>
+                        </div>
+                        <div class="progress" style="height:10px; border-radius:999px; background:#dff5e8;">
+                            <div class="progress-bar" style="width: <?php echo e($donePercent); ?>%; background:#1f9254;"></div>
+                        </div>
+                        <div class="small mt-3" style="color: var(--text-soft);">
+                            Laporan yang sudah selesai ditindaklanjuti.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php if($latestAspirasi): ?>
+                <div class="mt-4 p-3 rounded-4" style="background:#f6f3ee; border:1px solid var(--border-soft);">
+                    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
+                        <div>
+                            <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.08em; color: var(--text-soft);">Aspirasi Terbaru</div>
+                            <div class="fw-bold mb-1"><?php echo e($latestAspirasi->kategori->ket_kategori); ?></div>
+                            <div class="small" style="color: var(--text-soft);">
+                                <?php echo e($latestAspirasi->lokasi); ?> • <?php echo e($latestAspirasi->created_at->format('d M Y')); ?>
+
+                            </div>
+                            <div class="mt-2" style="color:#4b5563;">
+                                <?php echo e(\Illuminate\Support\Str::limit($latestAspirasi->ket, 120)); ?>
+
+                            </div>
+                        </div>
+                        <div class="text-lg-end">
+                            <span class="status-pill <?php echo e($statusClass($latestAspirasi->status)); ?>">
+                                <?php echo e($latestAspirasi->status); ?>
+
+                            </span>
+                            <div class="small mt-2" style="color: var(--text-soft);">
+                                Progress <?php echo e($latestAspirasi->progress_persen); ?>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<div class="card-soft p-0 overflow-hidden" id="daftar-aspirasi">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 p-4 border-bottom" style="border-color: var(--border-soft) !important;">
+        <div>
+            <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.08em; color: var(--text-soft);">Daftar Aspirasi</div>
+            <h5 class="mb-1 fw-bold">Riwayat laporan siswa</h5>
+            <div class="small" style="color: var(--text-soft);">
+                Semua histori aspirasi yang pernah kamu kirim ditampilkan di bawah ini.
+            </div>
+        </div>
+
+        <a href="<?php echo e(route('siswa.aspirasi.create')); ?>" class="btn btn-soft">
+            <i class="bi bi-plus-circle me-2"></i>
+            Buat Aspirasi Baru
+        </a>
+    </div>
+
+    <?php $__empty_1 = true; $__currentLoopData = $aspirasis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $aspirasi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+        <div class="d-block d-xl-none p-3 border-bottom" style="border-color: var(--border-soft) !important;">
+            <div class="card-soft p-3 shadow-none border">
+                <div class="d-flex justify-content-between gap-3 mb-2">
+                    <div>
+                        <div class="fw-bold"><?php echo e($aspirasi->kategori->ket_kategori); ?></div>
+                        <div class="small" style="color: var(--text-soft);">
+                            <?php echo e($aspirasi->created_at->format('d/m/Y')); ?> • <?php echo e($aspirasi->lokasi); ?>
+
+                        </div>
+                    </div>
+                    <span class="status-pill <?php echo e($statusClass($aspirasi->status)); ?>">
+                        <?php echo e($aspirasi->status); ?>
+
+                    </span>
+                </div>
+
+                <div class="small mb-2" style="color:#4b5563;">
+                    <?php echo e(\Illuminate\Support\Str::limit($aspirasi->ket, 100)); ?>
+
+                </div>
+
+                <div class="small mb-2" style="color: var(--text-soft);">
+                    Feedback: <?php echo e(\Illuminate\Support\Str::limit($aspirasi->feedback ?: '-', 80)); ?>
+
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span style="color: var(--text-soft);">Progress</span>
+                        <span class="fw-bold"><?php echo e($aspirasi->progress_persen); ?>%</span>
+                    </div>
+                    <div class="progress" style="height:8px; border-radius:999px; background:#ece7e1;">
+                        <div class="progress-bar" style="width: <?php echo e($aspirasi->progress_persen); ?>%; background: var(--primary);"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="<?php echo e(route('siswa.aspirasi.show', $aspirasi)); ?>" class="btn btn-soft btn-sm">
+                        <i class="bi bi-eye me-1"></i>
+                        Detail
+                    </a>
+
+                    <?php if($aspirasi->status === 'Menunggu'): ?>
+                        <a href="<?php echo e(route('siswa.aspirasi.edit', $aspirasi)); ?>" class="btn btn-primary btn-sm">
+                            <i class="bi bi-pencil-square me-1"></i>
+                            Ubah
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+    <?php endif; ?>
+
+    <div class="table-responsive d-none d-xl-block">
+        <table class="table table-modern align-middle">
+            <thead>
                 <tr>
                     <th>Tanggal</th>
                     <th>Kategori</th>
@@ -38,49 +319,93 @@
                     <th>Isi Aspirasi</th>
                     <th>Status</th>
                     <th>Feedback</th>
-                    <th>Progres</th>
+                    <th>Progress</th>
                     <th class="text-end">Aksi</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 <?php $__empty_1 = true; $__currentLoopData = $aspirasis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $aspirasi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <tr>
-                        <td><?php echo e($aspirasi->created_at->format('d/m/Y')); ?></td>
-                        <td><?php echo e($aspirasi->kategori->ket_kategori); ?></td>
-                        <td><?php echo e($aspirasi->lokasi); ?></td>
-                        <td><?php echo e(\Illuminate\Support\Str::limit($aspirasi->ket, 70)); ?></td>
+                        <td class="fw-semibold"><?php echo e($aspirasi->created_at->format('d/m/Y')); ?></td>
                         <td>
-                            <span class="badge status-badge text-bg-<?php echo e($aspirasi->status === 'Selesai' ? 'success' : ($aspirasi->status === 'Proses' ? 'warning' : 'secondary')); ?>">
+                            <div class="fw-bold"><?php echo e($aspirasi->kategori->ket_kategori); ?></div>
+                        </td>
+                        <td><?php echo e($aspirasi->lokasi); ?></td>
+                        <td style="min-width: 260px;"><?php echo e(\Illuminate\Support\Str::limit($aspirasi->ket, 80)); ?></td>
+                        <td>
+                            <span class="status-pill <?php echo e($statusClass($aspirasi->status)); ?>">
                                 <?php echo e($aspirasi->status); ?>
 
                             </span>
                         </td>
-                        <td><?php echo e(\Illuminate\Support\Str::limit($aspirasi->feedback ?: '-', 50)); ?></td>
-                        <td style="min-width: 160px;">
-                            <div class="progress" role="progressbar" aria-valuenow="<?php echo e($aspirasi->progress_persen); ?>" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar" style="width: <?php echo e($aspirasi->progress_persen); ?>%"><?php echo e($aspirasi->progress_persen); ?>%</div>
+                        <td style="min-width: 220px;"><?php echo e(\Illuminate\Support\Str::limit($aspirasi->feedback ?: '-', 60)); ?></td>
+                        <td style="min-width: 150px;">
+                            <div class="small fw-bold mb-1"><?php echo e($aspirasi->progress_persen); ?>%</div>
+                            <div class="progress" style="height:8px; border-radius:999px; background:#ece7e1;">
+                                <div class="progress-bar" style="width: <?php echo e($aspirasi->progress_persen); ?>%; background: var(--primary);"></div>
                             </div>
                         </td>
                         <td class="text-end">
-                            <a href="<?php echo e(route('siswa.aspirasi.show', $aspirasi)); ?>" class="btn btn-sm btn-outline-primary">Detail</a>
-                            <?php if($aspirasi->status === 'Menunggu'): ?>
-                                <a href="<?php echo e(route('siswa.aspirasi.edit', $aspirasi)); ?>" class="btn btn-sm btn-primary">Ubah</a>
-                            <?php endif; ?>
+                            <div class="d-inline-flex gap-2">
+                                <a href="<?php echo e(route('siswa.aspirasi.show', $aspirasi)); ?>" class="btn btn-soft btn-sm">
+                                    Detail
+                                </a>
+
+                                <?php if($aspirasi->status === 'Menunggu'): ?>
+                                    <a href="<?php echo e(route('siswa.aspirasi.edit', $aspirasi)); ?>" class="btn btn-primary btn-sm">
+                                        Ubah
+                                    </a>
+                                <?php endif; ?>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-4">Belum ada aspirasi yang dikirim.</td>
+                        <td colspan="8" class="text-center py-5">
+                            <div class="mx-auto" style="max-width: 420px;">
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:72px; height:72px; background:#f1efea; color:var(--primary);">
+                                    <i class="bi bi-inbox fs-3"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">Belum ada aspirasi yang dikirim</h6>
+                                <p class="mb-3" style="color: var(--text-soft);">
+                                    Mulai kirim laporan pertama kamu untuk sarana sekolah yang perlu diperbaiki.
+                                </p>
+                                <a href="<?php echo e(route('siswa.aspirasi.create')); ?>" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Input Aspirasi
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <?php echo e($aspirasis->links()); ?>
-
+            </tbody>
+        </table>
     </div>
+
+    <?php if($aspirasis->isEmpty()): ?>
+        <div class="d-xl-none p-4">
+            <div class="text-center py-4">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:72px; height:72px; background:#f1efea; color:var(--primary);">
+                    <i class="bi bi-inbox fs-3"></i>
+                </div>
+                <h6 class="fw-bold mb-2">Belum ada aspirasi yang dikirim</h6>
+                <p class="mb-3" style="color: var(--text-soft);">
+                    Mulai kirim laporan pertama kamu untuk sarana sekolah yang perlu diperbaiki.
+                </p>
+                <a href="<?php echo e(route('siswa.aspirasi.create')); ?>" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Input Aspirasi
+                </a>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if($aspirasis->hasPages()): ?>
+        <div class="p-4 border-top" style="border-color: var(--border-soft) !important;">
+            <?php echo e($aspirasis->links()); ?>
+
+        </div>
+    <?php endif; ?>
 </div>
 <?php $__env->stopSection(); ?>
-
-<?php echo $__env->make('layouts.app', ['title' => 'Histori Aspirasi Siswa'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\user\Downloads\pengaduan-sekolah-laravel\pengaduan-sekolah-laravel\resources\views/siswa/aspirasi/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', ['title' => 'Dashboard Siswa'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\user\Downloads\pengaduan-sekolah-laravel\pengaduan-sekolah-laravel\resources\views/siswa/aspirasi/index.blade.php ENDPATH**/ ?>

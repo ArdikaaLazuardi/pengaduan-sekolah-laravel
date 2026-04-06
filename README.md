@@ -59,7 +59,7 @@ Import file: `database/sql/pengaduan_sekolah.sql`
 
 ### 4. Jalankan aplikasi
 ```bash
-php artisan serve
+php artisan serve atau php -S 127.0.0.1:8000 -t public
 ```
 
 Buka:
@@ -74,7 +74,6 @@ Buka:
 ### Siswa
 - NIS: `2025001`
 - NIS: `2025002`
-- NIS: `2025003`
 
 ## Catatan Penting
 - Login siswa hanya menggunakan NIS karena mengikuti kebutuhan soal.

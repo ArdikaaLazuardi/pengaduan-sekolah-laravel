@@ -34,9 +34,9 @@
         <div class="auth-side">
             <div class="auth-brand">
                 <span class="auth-brand-icon">
-                    <i class="bi bi-buildings"></i>
+                    <img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo Sekolah" class="school-logo">
                 </span>
-                <span>Pengaduan Sekolah</span>
+                <span>Pengaduan Sarana Sekolah</span>
             </div>
 
             <div class="auth-pill">

@@ -55,46 +55,40 @@ class AspirasiController extends Controller
     }
 
     public function update(AdminAspirasiUpdateRequest $request, Aspirasi $aspirasi): RedirectResponse
-    {
-        $data = $request->validated();
-        $adminId = Auth::guard('admin')->id();
+{
+    $data = $request->validated();
+    $adminId = Auth::guard('admin')->id();
 
-        DB::transaction(function () use ($aspirasi, $data, $adminId): void {
-            $progress = (int) $data['progress_persen'];
+    DB::transaction(function () use ($aspirasi, $data, $adminId): void {
+        $statusProgressMap = [
+            'Menunggu' => 0,
+            'Proses' => 50,
+            'Selesai' => 100,
+        ];
 
-            if ($data['status'] === 'Menunggu') {
-                $progress = 0;
-            }
+        $progress = $statusProgressMap[$data['status']] ?? 0;
 
-            if ($data['status'] === 'Selesai') {
-                $progress = 100;
-            }
+        $aspirasi->update([
+            'status' => $data['status'],
+            'feedback' => $data['feedback'] ?? null,
+            'progress_persen' => $progress,
+            'admin_id' => $adminId,
+            'closed_at' => $data['status'] === 'Selesai' ? now() : null,
+        ]);
 
-            if ($data['status'] === 'Proses' && $progress === 0) {
-                $progress = 50;
-            }
-
-            $aspirasi->update([
-                'status' => $data['status'],
-                'feedback' => $data['feedback'] ?? null,
+        if (! empty($data['catatan_progress']) || $aspirasi->wasChanged('progress_persen')) {
+            ProgressUpdate::query()->create([
+                'aspirasi_id' => $aspirasi->id,
                 'progress_persen' => $progress,
+                'catatan' => $data['catatan_progress'] ?: 'Pembaruan status oleh admin.',
                 'admin_id' => $adminId,
-                'closed_at' => $data['status'] === 'Selesai' ? now() : null,
             ]);
+        }
+    });
 
-            if (! empty($data['catatan_progress']) || $aspirasi->wasChanged('progress_persen')) {
-                ProgressUpdate::query()->create([
-                    'aspirasi_id' => $aspirasi->id,
-                    'progress_persen' => $progress,
-                    'catatan' => $data['catatan_progress'] ?: 'Pembaruan status oleh admin.',
-                    'admin_id' => $adminId,
-                ]);
-            }
-        });
-
-        return redirect()->route('admin.aspirasi.index')
-            ->with('success', 'Status, feedback, dan progres aspirasi berhasil diperbarui.');
-    }
+    return redirect()->route('admin.aspirasi.index')
+        ->with('success', 'Status, feedback, dan progres aspirasi berhasil diperbarui.');
+}
 
     public function destroy(Aspirasi $aspirasi): RedirectResponse
     {

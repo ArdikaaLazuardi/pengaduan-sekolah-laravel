@@ -982,6 +982,20 @@
                 padding-right: 4px;
             }
         }
+        .school-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    background: white;
+    padding: 4px;
+}
+
+.auth-brand-icon,
+.sidebar-brand-icon {
+    overflow: hidden;
+}
+
     </style>
 
     <?php echo $__env->yieldPushContent('styles'); ?>
@@ -1040,7 +1054,7 @@
                     <aside class="dashboard-sidebar">
                         <div class="sidebar-brand">
                             <span class="sidebar-brand-icon">
-                                <i class="bi bi-buildings"></i>
+                                <img src="<?php echo e(asset('images/logo-sekolah.png')); ?>" alt="Logo Sekolah" class="school-logo">
                             </span>
                             <div class="sidebar-brand-text">
                                 Pengaduan

@@ -1,6 +1,6 @@
-@extends('layouts.app', ['title' => 'Login Admin'])
 
-@push('styles')
+
+<?php $__env->startPush('styles'); ?>
 <style>
     .admin-login-topbar .top-mini-bar {
         display: flex;
@@ -61,15 +61,15 @@
         }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="auth-card row g-0">
     <div class="col-lg-5">
         <div class="auth-side">
             <div class="auth-brand">
                 <span class="auth-brand-icon">
-                    <img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo Sekolah" class="school-logo">
+                    <img src="<?php echo e(asset('images/logo-sekolah.png')); ?>" alt="Logo Sekolah" class="school-logo">
                 </span>
                 <span>Admin Panel</span>
             </div>
@@ -150,8 +150,8 @@
                     pengelolaan aspirasi siswa dan memperbarui progres penanganan.
                 </p>
 
-                <form method="post" action="{{ route('admin.authenticate') }}">
-                    @csrf
+                <form method="post" action="<?php echo e(route('admin.authenticate')); ?>">
+                    <?php echo csrf_field(); ?>
 
                     <div class="mb-3">
                         <label class="form-label">Username</label>
@@ -162,7 +162,7 @@
                             <input
                                 type="text"
                                 name="username"
-                                value="{{ old('username') }}"
+                                value="<?php echo e(old('username')); ?>"
                                 class="form-control"
                                 placeholder="Masukkan username admin"
                                 required
@@ -195,7 +195,7 @@
                     </div>
 
                     <div class="d-grid mt-3">
-                        <a href="{{ route('siswa.login') }}" class="btn btn-soft">
+                        <a href="<?php echo e(route('siswa.login')); ?>" class="btn btn-soft">
                             <i class="bi bi-mortarboard me-2"></i>
                             Login sebagai Siswa
                         </a>
@@ -213,4 +213,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', ['title' => 'Login Admin'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\user\Downloads\pengaduan-sekolah-laravel\pengaduan-sekolah-laravel\resources\views/auth/admin-login.blade.php ENDPATH**/ ?>

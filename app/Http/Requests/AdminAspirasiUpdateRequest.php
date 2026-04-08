@@ -13,12 +13,12 @@ class AdminAspirasiUpdateRequest extends FormRequest
     }
 
     public function rules(): array
-    {
-        return [
-            'status' => ['required', Rule::in(['Menunggu', 'Proses', 'Selesai'])],
-            'feedback' => ['nullable', 'string', 'max:2000'],
-            'progress_persen' => ['required', 'integer', 'min:0', 'max:100'],
-            'catatan_progress' => ['nullable', 'string', 'max:2000'],
-        ];
-    }
+{
+    return [
+        'status' => ['required', Rule::in(['Menunggu', 'Proses', 'Selesai'])],
+        'feedback' => ['nullable', 'string', 'max:2000'],
+        'progress_persen' => ['nullable', 'integer', 'min:0', 'max:100'],
+        'catatan_progress' => ['nullable', 'string', 'max:2000'],
+    ];
+}
 }

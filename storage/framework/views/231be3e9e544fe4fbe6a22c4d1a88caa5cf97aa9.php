@@ -1,7 +1,5 @@
-@extends('layouts.app', ['title' => 'Update Aspirasi'])
-
-@section('content')
-@php
+<?php $__env->startSection('content'); ?>
+<?php
     $statusClass = match ($aspirasi->status) {
         'Menunggu' => 'status-menunggu',
         'Proses' => 'status-proses',
@@ -17,7 +15,7 @@
 
     $selectedStatus = old('status', $aspirasi->status);
     $selectedProgress = $statusProgressMap[$selectedStatus] ?? 0;
-@endphp
+?>
 
 <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
     <div>
@@ -30,11 +28,11 @@
     </div>
 
     <div class="d-flex flex-wrap gap-2">
-        <a href="{{ route('admin.aspirasi.show', $aspirasi) }}" class="btn btn-soft">
+        <a href="<?php echo e(route('admin.aspirasi.show', $aspirasi)); ?>" class="btn btn-soft">
             <i class="bi bi-eye me-2"></i>
             Lihat Detail
         </a>
-        <a href="{{ route('admin.aspirasi.index') }}" class="btn btn-soft">
+        <a href="<?php echo e(route('admin.aspirasi.index')); ?>" class="btn btn-soft">
             <i class="bi bi-arrow-left me-2"></i>
             Kembali
         </a>
@@ -48,10 +46,12 @@
                 <div>
                     <div class="small text-white-50 fw-semibold mb-2">Laporan Siswa</div>
                     <div style="font-size:1.75rem; font-weight:800; line-height:1.15;">
-                        {{ $aspirasi->siswa->nama }}
+                        <?php echo e($aspirasi->siswa->nama); ?>
+
                     </div>
                     <div class="mt-2 text-white-50">
-                        {{ $aspirasi->nis }} • {{ $aspirasi->siswa->kelas }}
+                        <?php echo e($aspirasi->nis); ?> • <?php echo e($aspirasi->siswa->kelas); ?>
+
                     </div>
                 </div>
                 <div class="rounded-4 d-inline-flex align-items-center justify-content-center"
@@ -62,37 +62,38 @@
 
             <div class="rounded-4 p-3 mb-3" style="background: rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.10);">
                 <div class="small text-white-50 mb-1">Kategori</div>
-                <div class="fw-semibold">{{ $aspirasi->kategori->ket_kategori }}</div>
+                <div class="fw-semibold"><?php echo e($aspirasi->kategori->ket_kategori); ?></div>
             </div>
 
             <div class="rounded-4 p-3 mb-3" style="background: rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.10);">
                 <div class="small text-white-50 mb-1">Lokasi</div>
-                <div class="fw-semibold">{{ $aspirasi->lokasi }}</div>
+                <div class="fw-semibold"><?php echo e($aspirasi->lokasi); ?></div>
             </div>
 
             <div class="rounded-4 p-3 mb-3" style="background: rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.10);">
                 <div class="small text-white-50 mb-1">Status Saat Ini</div>
                 <div class="d-flex align-items-center justify-content-between gap-2">
-                    <div class="fw-semibold">{{ $aspirasi->status }}</div>
-                    <span class="badge rounded-pill text-bg-light px-3 py-2">{{ $aspirasi->progress_persen }}%</span>
+                    <div class="fw-semibold"><?php echo e($aspirasi->status); ?></div>
+                    <span class="badge rounded-pill text-bg-light px-3 py-2"><?php echo e($aspirasi->progress_persen); ?>%</span>
                 </div>
             </div>
 
             <div class="rounded-4 p-3" style="background: rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.10);">
                 <div class="small text-white-50 mb-1">Isi Aspirasi</div>
                 <div class="fw-semibold" style="line-height:1.75;">
-                    {{ \Illuminate\Support\Str::limit($aspirasi->ket, 180) }}
+                    <?php echo e(\Illuminate\Support\Str::limit($aspirasi->ket, 180)); ?>
+
                 </div>
             </div>
 
             <div class="mt-4">
                 <div class="small text-white-50 mb-2">Akses cepat</div>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('admin.aspirasi.show', $aspirasi) }}" class="btn btn-light btn-sm px-3 rounded-pill fw-bold">
+                    <a href="<?php echo e(route('admin.aspirasi.show', $aspirasi)); ?>" class="btn btn-light btn-sm px-3 rounded-pill fw-bold">
                         <i class="bi bi-file-earmark-text me-1"></i>
                         Detail
                     </a>
-                    <a href="{{ route('admin.aspirasi.index') }}" class="btn btn-outline-light btn-sm px-3 rounded-pill fw-bold">
+                    <a href="<?php echo e(route('admin.aspirasi.index')); ?>" class="btn btn-outline-light btn-sm px-3 rounded-pill fw-bold">
                         <i class="bi bi-table me-1"></i>
                         Daftar
                     </a>
@@ -113,16 +114,17 @@
                         </div>
                     </div>
 
-                    <span class="status-pill {{ $statusClass }}">
-                        {{ $aspirasi->status }}
+                    <span class="status-pill <?php echo e($statusClass); ?>">
+                        <?php echo e($aspirasi->status); ?>
+
                     </span>
                 </div>
             </div>
 
             <div class="p-4 p-lg-5">
-                <form method="post" action="{{ route('admin.aspirasi.update', $aspirasi) }}">
-                    @csrf
-                    @method('PUT')
+                <form method="post" action="<?php echo e(route('admin.aspirasi.update', $aspirasi)); ?>">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
 
                     <div class="row g-4">
                         <div class="col-md-6">
@@ -132,16 +134,24 @@
                                     <i class="bi bi-ui-checks-grid"></i>
                                 </span>
                                 <select name="status" id="statusSelect" class="form-select" required>
-                                    @foreach (['Menunggu', 'Proses', 'Selesai'] as $status)
-                                        <option value="{{ $status }}" @selected($selectedStatus === $status)>
-                                            {{ $status }}
+                                    <?php $__currentLoopData = ['Menunggu', 'Proses', 'Selesai']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($status); ?>" <?php if($selectedStatus === $status): echo 'selected'; endif; ?>>
+                                            <?php echo e($status); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
-                            @error('status')
-                                <div class="text-danger small mt-2">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-2"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             <div class="small mt-2" style="color: var(--text-soft);">
                                 Pilih status terbaru sesuai kondisi penanganan saat ini.
                             </div>
@@ -159,7 +169,7 @@
                                     min="0"
                                     max="100"
                                     class="form-control"
-                                    value="{{ $selectedProgress }}"
+                                    value="<?php echo e($selectedProgress); ?>"
                                     placeholder="0 - 100"
                                     disabled
                                 >
@@ -167,12 +177,19 @@
                                     type="hidden"
                                     name="progress_persen"
                                     id="progressValue"
-                                    value="{{ $selectedProgress }}"
+                                    value="<?php echo e($selectedProgress); ?>"
                                 >
                             </div>
-                            @error('progress_persen')
-                                <div class="text-danger small mt-2">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['progress_persen'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mt-2"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             <div class="small mt-2" style="color: var(--text-soft);">
                                 Persentase akan terisi otomatis berdasarkan status:
                                 Menunggu = 0%, Proses = 50%, Selesai = 100%.
@@ -188,11 +205,18 @@
                                     class="form-control"
                                     placeholder="Tulis feedback yang akan dilihat siswa..."
                                     style="min-height: 150px; resize: vertical;"
-                                >{{ old('feedback', $aspirasi->feedback) }}</textarea>
+                                ><?php echo e(old('feedback', $aspirasi->feedback)); ?></textarea>
 
-                                @error('feedback')
-                                    <div class="text-danger small mt-2">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['feedback'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger small mt-2"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
 
                                 <div class="small mt-2" style="color: var(--text-soft);">
                                     Feedback ini akan tampil pada detail aspirasi siswa.
@@ -209,11 +233,18 @@
                                     class="form-control"
                                     placeholder="Contoh: Teknisi mengganti lampu dan memeriksa instalasi listrik."
                                     style="min-height: 150px; resize: vertical;"
-                                >{{ old('catatan_progress') }}</textarea>
+                                ><?php echo e(old('catatan_progress')); ?></textarea>
 
-                                @error('catatan_progress')
-                                    <div class="text-danger small mt-2">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['catatan_progress'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger small mt-2"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
 
                                 <div class="small mt-2" style="color: var(--text-soft);">
                                     Catatan ini akan masuk ke histori progres penanganan.
@@ -228,7 +259,7 @@
                         </div>
 
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="{{ route('admin.aspirasi.show', $aspirasi) }}" class="btn btn-soft">
+                            <a href="<?php echo e(route('admin.aspirasi.show', $aspirasi)); ?>" class="btn btn-soft">
                                 Batal
                             </a>
                             <button type="submit" class="btn btn-primary">
@@ -270,10 +301,10 @@
                         </div>
 
                         <form method="post"
-                              action="{{ route('admin.aspirasi.destroy', $aspirasi) }}"
+                              action="<?php echo e(route('admin.aspirasi.destroy', $aspirasi)); ?>"
                               onsubmit="return confirm('Hapus aspirasi ini?')">
-                            @csrf
-                            @method('DELETE')
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
 
                             <button type="submit" class="btn btn-danger rounded-4 px-4">
                                 <i class="bi bi-trash3 me-2"></i>
@@ -311,4 +342,5 @@
         }
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', ['title' => 'Update Aspirasi'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\user\Downloads\pengaduan-sekolah-laravel\pengaduan-sekolah-laravel\resources\views/admin/aspirasi/edit.blade.php ENDPATH**/ ?>
